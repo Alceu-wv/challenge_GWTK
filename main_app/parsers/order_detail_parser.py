@@ -22,6 +22,7 @@ def fetch_order_details() -> None:
     for order_details in data_set:
         try:
             OrderDetails.objects.get_or_create(**order_details)
+            logger.debug(order_details["id"])
         except IntegrityError as error:
             logger.warning(f"OrderDetails {order_details['id']} unable to be created: {error}")
 

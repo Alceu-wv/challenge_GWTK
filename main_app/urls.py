@@ -43,8 +43,8 @@ urlpatterns = [
         name="get_most_popular_pizza_ingredients",
     ),
     path(
-        "get_most_popular_pizza_ingredients/",
-        StatisticsViewSet.as_view({"get": "get_most_popular_pizza_ingredients"}),
-        name="get_most_popular_pizza_ingredients",
+        "get_most_sold_pizzas/",
+        StatisticsViewSet.as_view({"get": "get_most_sold_pizzas"}),
+        name="get_most_sold_pizzas",
     ),
 ] + router.urls

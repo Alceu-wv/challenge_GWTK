@@ -15,7 +15,7 @@ def get_most_popular_pizza() -> Tuple[Pizzas, np.int64]:
     df_order_details = pd.DataFrame(list(OrderDetails.objects.all().values()))
 
     if df_order_details.empty:
-        raise NoDataException("No data, impossible do generate statistic for most popular pizza")
+        raise NoDataException("No OrderDetails data, impossible do generate statistic for most popular pizza")
 
     pizza, quantity = get_most_ordered_pizza_and_quantity(df_order_details)
 

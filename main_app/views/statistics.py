@@ -1,3 +1,6 @@
+import json
+
+import pandas as pd
 from django.forms.models import model_to_dict
 from drf_spectacular.utils import extend_schema
 from loguru import logger
@@ -5,6 +8,8 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 
 from main_app.exceptions import NoDataException
+from main_app.models.order_details import OrderDetails
+from main_app.statistics_generator.helpers import get_popularity_rank
 from main_app.statistics_generator.most_popular_pizza import get_most_popular_pizza
 from main_app.statistics_generator.most_popular_pizza_day import get_most_popular_pizza_day
 
@@ -28,6 +33,8 @@ class StatisticsViewSet(viewsets.ViewSet):
                 "quantity": quantity,
             }
 
+            return Response(result, status=200)
+
         except NoDataException as error:
             logger.error(error)
             return Response({"detail": error.args[0]}, status=200)
@@ -36,8 +43,6 @@ class StatisticsViewSet(viewsets.ViewSet):
             response = {"detail": "Unknown error trying to get most popular pizza"}
             logger.error(error)
             return Response(response, status=500)
-
-        return Response(result, status=200)
 
     @extend_schema(
         summary="get most popular pizza and day",
@@ -58,6 +63,8 @@ class StatisticsViewSet(viewsets.ViewSet):
                 }
             }
 
+            return Response(result, status=200)
+
         except NoDataException as error:
             logger.error(error)
             return Response({"detail": error.args[0]}, status=200)
@@ -67,18 +74,32 @@ class StatisticsViewSet(viewsets.ViewSet):
             logger.error(error)
             return Response(response, status=500)
 
-        return Response(result, status=200)
-
     @extend_schema(
         summary="get most sold pizzas",
         description="Returns sorted list of the most sold pizza types",
     )
     def get_most_sold_pizzas(self, request, *args, **kwargs):
         logger.info("Request for 'get_most_sold_pizzas'")
+        try:
+            # TODO: encapsulate and take out of the view class
+            df_order_details = pd.DataFrame(list(OrderDetails.objects.all().values()))
+            if df_order_details.empty:
+                raise NoDataException("No OrderDetails data, impossible do generate statistic for most popular pizza")
 
-        # TODO:
+            result = get_popularity_rank(df_order_details)
 
-        return Response({"detail": "not implemented, please hire me for more"}, status=501)
+            json_result = json.loads(result.to_json(orient="index"))
+
+            return Response(json_result, status=200)
+
+        except NoDataException as error:
+            logger.error(error)
+            return Response({"detail": error.args[0]}, status=200)
+
+        except Exception as error:
+            response = {"detail": "Unknown error trying to get most popular pizza and day"}
+            logger.error(error)
+            return Response(response, status=500)
 
     @extend_schema(
         summary="get most popular pizza ingredients",
@@ -89,4 +110,4 @@ class StatisticsViewSet(viewsets.ViewSet):
 
         # TODO:
 
-        return Response({"detail": "not implemented, please hire me for more"}, status=501)
+        return Response({"detail": "not implemented, please hire me for more ;p"}, status=501)

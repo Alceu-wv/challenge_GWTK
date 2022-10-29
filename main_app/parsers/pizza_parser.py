@@ -20,6 +20,7 @@ def fetch_pizzas() -> None:
     for pizza in data_set:
         try:
             Pizzas.objects.create(**pizza)
+            logger.debug(pizza["id"])
         except IntegrityError as error:
             logger.warning(f"Pizza {pizza['id']} unable to be created: {error}")
 

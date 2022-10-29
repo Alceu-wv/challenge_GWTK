@@ -25,7 +25,7 @@ def test_get_most_popular_pizza_no_data(api):
     req = api.get("/api/get_most_popular_pizza/")
 
     assert req.status_code == 200
-    assert req.json() == {"detail": "No data, impossible do generate statistic for most popular pizza"}
+    assert req.json() == {"detail": "No OrderDetails data, impossible do generate statistic for most popular pizza"}
 
 
 # TODO: Same structure than get_most_popular_pizza testing

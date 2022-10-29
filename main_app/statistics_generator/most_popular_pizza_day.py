@@ -22,7 +22,7 @@ def get_most_popular_pizza_day() -> Tuple[datetime.date, Pizzas, np.int64]:
     df_orders = pd.DataFrame(list(Order.objects.all().values()))
 
     if df_orders.empty:
-        raise NoDataException("No data, impossible do generate statistic for most popular pizza")
+        raise NoDataException("No Order data, impossible do generate statistic for most popular pizza")
 
     days_occurrances = df_orders["date"].value_counts().sort_values(ascending=False)
     most_popular_day = days_occurrances.index[0]
@@ -31,6 +31,9 @@ def get_most_popular_pizza_day() -> Tuple[datetime.date, Pizzas, np.int64]:
     df_most_popular_order_ids = list(df_most_popular_orders.id)
 
     df_order_details = pd.DataFrame(OrderDetails.objects.filter(id__in=df_most_popular_order_ids).values())
+
+    if df_order_details.empty:
+        raise NoDataException("No OrderDetails data, impossible do generate statistic for most popular pizza")
 
     pizza, quantity = get_most_ordered_pizza_and_quantity(df_order_details)
 

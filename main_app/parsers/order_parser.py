@@ -24,6 +24,7 @@ def fetch_order() -> None:
     for order in data_set:
         try:
             Order.objects.create(**order)
+            logger.debug(order["id"])
         except IntegrityError as error:
             logger.warning(f"Order {order['id']} unable to be created: {error}")
 
