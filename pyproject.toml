@@ -1,3 +1,9 @@
+[tool.stela]
+default_environment = "local"
+environment_variable_name = "ENV"
+show_logs = true
+use_environment_layers = true
+
 [environment]
 project.name = "main_app"
 project.secret_key = "foo"
@@ -6,6 +12,8 @@ project.allow_all_origins = false
 project.allowed_hosts = ["*"]
 project.show_debug_toolbar = true
 project.show_django_pages = true
+project.aws_region = "us-east-1"
+project.broker_type = "sqs"
 
 [environment.local]
 project.allow_all_origins = true
@@ -92,6 +100,7 @@ asbool = "*"
 boto3 = "*"
 stela = "^4.0.2"
 stringcase = "^1.2.0"
+pandas = "^1.5.1"
 
 
 [tool.poetry.dev-dependencies]
