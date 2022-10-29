@@ -9,6 +9,7 @@ from loguru import logger
 # set the default Django settings module for the "celery" program.
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "core.settings")
 
+
 app = Celery("main_app")
 
 # Using a string here means the worker doesn"t have to serialize
@@ -27,4 +28,11 @@ app.conf.beat_schedule = {
         "task": "worker_health_check",
         "schedule": crontab(minute="*/1"),
     },
+    "fetch_data": {
+        "task": "fetch_data_task",
+        "schedule": crontab(minute="*/1"),
+    },
 }
+
+# Midnigth crontab
+# 00***
